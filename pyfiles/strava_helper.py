@@ -23,15 +23,27 @@ class StravaAPI():
         self.ACCESS_TOKENS = dict()
 
         # Connect to MySQL database
-        self.mysql_connection = self.connect_mySQL()
+        self.connect_mySQL()
+        
 
     ## Authorize Strava API
-    def authorize(self, scope: str) -> str:
+    def authorize(self, scope: str, athlete_id: str) -> str:
         '''Authorize Strava API
         Input: None
         Output: Authorization URL
         '''
+        
+        check_query = f'''
+            select tkn_acesso_{scope} from atletas where id = '{athlete_id}'
+        '''
 
+        cursor = self.mysql_connection.cursor()
+        cursor.execute(check_query)
+        data = cursor.fetchone()
+
+        # if data[0] is not None:
+        #     return
+        
         # Set scopes
         scopes = {
             'profile': 'profile:read_all',
@@ -76,6 +88,14 @@ class StravaAPI():
         # Set access token
         self.ACCESS_TOKENS[scope] = response.json()['access_token']
 
+        # update_query = f'''
+        #     update atletas
+        #     set access_token_{scope} = '{self.ACCESS_TOKENS[scope]}'
+        #     where id = '{athlete_id}'
+        # '''
+
+        # self.execute_query(update_query)
+
         return
 
     ## Get data from Strava API
@@ -113,10 +133,42 @@ class StravaAPI():
         Output: connection object
         '''
 
-        # Return connection
-        return mysql.connector.connect(
+        # Connect to MySQL database
+        self.mysql_connection = mysql.connector.connect(
             host = 'localhost',
             database = 'db_strava',
             user = self.MYSQL_USER,
             password = self.MYSQL_PASSWORD
         )
+
+        # Set autocommit
+        self.mysql_connection.autocommit = True
+
+        return 
+    
+    
+    def execute_query(self, query: str) -> None:
+        '''Execute query
+        Input: query
+        Output: None
+        '''
+
+        cursor = self.mysql_connection.cursor()
+        cursor.execute(query)
+        return
+
+    def get_athlete_by_id(self, athlete_id: int) -> dict:
+        '''Get athlete by id
+        Input: athlete_id
+        Output: athlete data
+        '''
+        
+        query = '''
+            select * from atletas where id = '{athlete_id}'
+        '''
+
+        cursor = self.mysql_connection.cursor()
+        cursor.execute(query)
+        data = cursor.fetchone()
+
+        return data
