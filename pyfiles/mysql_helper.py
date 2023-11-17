@@ -37,7 +37,7 @@ class MySQLHelper():
         self.mysql_connection.autocommit = True
 
         print(f'Connected successfully to {self.mysql_connection.database}')
-        return 
+        return
     
     
     def execute_query(self, query: str) -> None:
@@ -70,7 +70,7 @@ class MySQLHelper():
 
     def insert_data(self, table: str, data: dict) -> None:
         try:
-
+            
             # Gere a parte da consulta SQL com os nomes das colunas e marcadores de posição
             columns = ', '.join(data.keys())
             values = ', '.join(['%s'] * len(data))

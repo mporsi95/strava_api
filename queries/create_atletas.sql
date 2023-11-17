@@ -19,10 +19,8 @@ create table atletas (
     pref_data varchar(255),
     pref_medidas varchar(255),
     ftp float,
-    tkn_acesso_perfil varchar(255),
-    tkn_acesso_atividade varchar(255),
-    dh_criacao datetime,
-    dh_atualizacao datetime,
+    dh_criacao_perfil datetime,
+    dh_atualizacao_perfil datetime,
     dh_ingestao datetime
 );
 
