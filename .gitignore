@@ -1,2 +1,3 @@
-pyfiles/keys.py
-pyfiles/testes.ipynb
+venv
+dev.ipynb
+__pycache__
